@@ -1,0 +1,35 @@
+Um elemento jsx, é um objeto simples, que consome menos recursos que um objeto
+javascript convencional. Para poder mostrar um elemento na tela, é preciso de um elemento
+'pai', que vai conter os demais. Geralmente, uma div com um id:
+
+<div id="root"></div>
+
+No arquivo index.js:
+
+const element = <h1>Hello, world</h1>;
+ReactDOM.render(element, document.getElementById('root'));
+
+O ReactDOM é o que vai mostrar elementos na tela. Ele recebe o que se quer mostrar
+e onde vai ser injetado, ou seja, a div de id 'root'.
+
+Um elemento react é, por definição, imutável: uma vez jogado na tela, ele não muda.
+Até então, para mudar um elemento, tem de chamar o reactdom.render novamente com o elemento:
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+  
+function tick() {
+  const element = (
+    <div>
+      <h1>Hello, world!</h1>
+      <h2>It is {new Date().toLocaleTimeString()}.</h2>
+    </div>
+  );
+  root.render(element);
+}
+
+setInterval(tick, 1000);
+
+É preciso passar um novo elemento sempre no render() -> isso é feito com um setInterval
+a cada 1 segundo. E o react sabe o que atualizar: mesmo passando um elemento novo sempre,
+ele o compara com o que já existe, mudando apenas o que precisar, eliminando bugs e garantindo
+desempenho.

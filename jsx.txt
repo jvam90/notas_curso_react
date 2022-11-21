@@ -1,0 +1,98 @@
+const element = <h1>Hello!</h1>;
+
+Em react, isso não é nem html nem uma string, mas jsx. Basicamente é uma linguagem de
+template, mas que pode ser integrada com javascript que tem um objetivo: dizer como os
+elementos react devem 'parecer'.
+
+Mas por que jsx? React entende que um componente engloba tanto apresentação, quanto lógica:
+eventos de clique, mudança de estado, etc. Por isso, ao invés de separar tecnologias e
+linguagens, esses conceitos são unidos em unidades separadas, chamadas de componentes.
+
+Para integrar javascript em jsx:
+
+const nome = "Joao";
+const elemento = <h1>Ola, {nome}</h1>
+
+Quando se usa {}, pode se executar código javascript, variáveis, executar funções, etc.
+
+function formatarNome(nome) {
+  return "Eita, nois " + nome;
+}
+
+function App() {
+  const nome = "Joao";
+  const elemento = <h1>{formatarNome(nome)}</h1>;
+  return elemento;
+}
+
+export default App;
+
+No exemplo acima, se chama uma função javascript para formatar nome. Após compilados,
+código jsx se transformam em expressões que retornam javascript, que podem ser 
+usadas em expressões if else.
+
+function formatarNome(completo) {
+  if (completo) {
+    return <h1>Joao Victor Alves Martins</h1>;
+  } else {
+    return <h1>Joao</h1>;
+  }
+}
+
+function App() {
+  const elemento = formatarNome(false);
+  return elemento;
+}
+
+export default App;
+
+A função retorna um componente jsx, que foi usada com if else.
+
+Também é possível passar atributos para os componentes:
+
+<h1 randomprop="eita">Joao Victor Alves Martins</h1>
+
+Se inspetar o elemento em um navegador, é possível ver a propriedade como uma html.
+No entanto, como algumas palavras são reservadas, o react usa camelCase em algumas.
+Por exemplo, class seria className.
+
+Um elemento jsx pode ter mais de um filho:
+
+const element = (
+  <div>
+    <h1>Hello!</h1>
+    <h2>Good to see you here.</h2>
+  </div>
+);
+
+No entanto, o react exige um elemento pai para conter os filhos. A div poderia ser trocada
+por <></>, que no react seria como um "elemento vazio" que comporta os filhos. Outra coisa
+que o react faz por padrão, é escapar qualquer valor incorporado ao jsx, previnindo
+ataques de injeção de código malicioso.
+
+Por fim, jsx representa objetos:
+
+const element = (
+  <h1 className="greeting">
+    Hello, world!
+  </h1>
+);
+
+Seria o mesmo que:
+
+const element = React.createElement(
+  'h1',
+  {className: 'greeting'},
+  'Hello, world!'
+);
+
+O react usa como transpilador o babel, que converte jsx em código javascript. Resumindo
+a estrutura do objeto:
+
+const element = {
+  type: 'h1',
+  props: {
+    className: 'greeting',
+    children: 'Hello, world!'
+  }
+};

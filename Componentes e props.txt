@@ -1,0 +1,90 @@
+Componentes permitem dividir a interface em partes independentes, e nada mais são 
+do que funções javascript, que aceitam um parâmetro com as propriedades/atributos que
+podem ser passados.
+
+function Welcome(props) {
+  return <h1>Olá, {props.name}</h1>;
+}
+
+Props é um objeto que pode possuir diversas propriedades. No exemplo acima, tem uma
+chamada 'name'.
+
+Um componente pode chamar outros:
+
+function Welcome(props) {
+  return <h1>Olá, {props.name}</h1>;
+}
+
+function App() {
+  return (
+    <div>
+      <Welcome name="Sara" />
+      <Welcome name="Cahal" />
+      <Welcome name="Edite" />
+    </div>
+  );
+}
+
+O componente App referencia o componente Welcome, usando-o diversas vezes. Uma outra coisa
+que pode ser feita, é dividir componentes maiores em menores.
+
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <div className="UserInfo">
+        <img className="Avatar"
+          src={props.author.avatarUrl}
+          alt={props.author.name}
+        />
+        <div className="UserInfo-name">
+          {props.author.name}
+        </div>
+      </div>
+      <div className="Comment-text">
+        {props.text}
+      </div>
+      <div className="Comment-date">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
+
+<img className="Avatar"
+    src={props.author.avatarUrl}
+    alt={props.author.name}
+/>
+
+Poderia ser:
+
+function Avatar(props){
+    return(
+        <img className="Avatar" 
+            src={props.author.avatarUrl}
+            alt={props.author.name}
+    )
+}
+
+E no contexto maior:
+
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <div className="UserInfo">
+        <Avatar user={props.author} />
+        <div className="UserInfo-name">
+          {props.author.name}
+        </div>
+      </div>
+      <div className="Comment-text">
+        {props.text}
+      </div>
+      <div className="Comment-date">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
+
+
+Props são atributos que devem ser somente de leitura, ou seja, não devem ser alteradas.
+Funções que não alteram props/parâmetros/entradas, são chamadas de puras. Se mudar,
+impuras.

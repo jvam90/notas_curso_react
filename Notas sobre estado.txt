@@ -1,0 +1,25 @@
+1 - Não modificar estado diretamente:
+
+const [variavel, setVariavel] = useState("") -> vai retornar uma variavel e uma função
+que atualiza essa variavel. Nunca fazer:
+
+variavel = alguma coisa.
+
+Sempre usar a função que atualiza: setVariavel(variavel muda aqui);
+
+2 - Atualizações de estado podem ser assíncronas:
+
+É possível que atualizações de estado falhem se mudar diretamente.
+Existe uma alternativa que recebe uma função de callback:
+
+this.setState((state, props) => ({
+  counter: state.counter + props.increment
+}));
+
+Que vai com certeza atualizar o estado.
+
+3 - Atualizações de estado são mescladas: o react mistura o objeto que existe com 
+o que é passado.
+
+4 - Dados fluem para baixo: se um componente define um estado, só ele deve ter acesso. 
+Os filhos só leêm os dados.

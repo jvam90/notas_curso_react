@@ -1,0 +1,77 @@
+React permite que o usuário mostre os componentes de acordo com o estado atual da
+aplicação, por meio de operadores condicionais.
+
+function Usuario({ usuario }) {
+  return <h1>Bem vindo, {usuario}</h1>;
+}
+
+function Visitante({ usuario }) {
+  return <h1>Faça login no sistema.</h1>;
+}
+
+function Ola({ isLogged }) {
+  if (isLogged) {
+    return <Usuario usuario="Joao"></Usuario>;
+  } else {
+    return <Visitante></Visitante>;
+  }
+}
+
+function App() {
+  return (
+    <>
+      <Ola isLogged={false}></Ola>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+A função Ola vai retornar condicionalmente um componente dependendo do valor recebido.
+
+Também é possível usar de forma inline:
+
+function Mailbox(props) {
+  const unreadMessages = props.unreadMessages;
+  return (
+    <div>
+      <h1>Hello!</h1>
+      {unreadMessages.length > 0 &&
+        <h2>
+          You have {unreadMessages.length} unread messages.
+        </h2>
+      }
+    </div>
+  );
+}
+
+const messages = ['React', 'Re: React', 'Re:Re: React'];
+ReactDOM.render(
+  <Mailbox unreadMessages={messages} />,
+  document.getElementById('root')
+);
+
+O operador && foi usado. A expressão pode ser traduzida em: se houver itens dentro de
+unreadMessages (.length > 0), ele vai retornar verdade e prosseguir imprimindo o <h2>.
+
+Isto funciona porque em JavaScript, true && expressão são sempre avaliadas como expressão,
+e false && expressão são sempre avaliadas como false.
+
+Ou ainda com o operador ternário:
+
+The user is <b>{isLoggedIn ? 'currently' : 'not'}</b> logged in.
+
+Se quiser que o componente não seja renderizado, basta retornar null.
+
+function WarningBanner(props) {
+  if (!props.warn) {
+    return null;
+  }
+
+  return (
+    <div className="warning">
+      Warning!
+    </div>
+  );
+}

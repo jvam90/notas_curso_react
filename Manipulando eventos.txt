@@ -1,0 +1,64 @@
+Manipulando eventos em react:
+
+1 - Eventos são escritos em camelCase
+2 - Com jsx, se passa uma função como o manipulador do evento
+
+O que seria em html:
+
+<button onclick="activateLasers()">
+  Ativar lasers
+</button>
+
+Em react seria:
+
+<button onClick={activateLasers}>
+  Ativar lasers
+</button>
+
+Outra coisa é que se quiser evitar o comportamento padrão do navegador, não se pode
+retornar false, mas deve chamar explicitamente o preventDefault:
+
+function Form() {
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log('Você clicou em enviar.');
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <button type="submit">Enviar</button>
+    </form>
+  );
+}
+
+O form tem uma função que vai lidar com o evento de submit. Nele, se recebe como argumento
+um evento sintético (synthetic event), que trabalham de forma um pouco diferente do padrão.
+
+Então, para gerenciar um evento:
+
+1 - cria uma função para tal
+2 - passa ela como chamada no evento do elemento
+
+function handleClick(e) {
+  alert("Aoba!");
+}
+
+function App() {
+  return (
+    <>
+      <h1>Oi</h1>
+      <button onClick={handleClick}>Clica ai</button>
+    </>
+  );
+}
+
+Outro ponto é que não é necessário criar um addEventListener para o evento. Outra coisa
+que também se pode fazer, é passar argumentos para uma função handler:
+
+<button onClick={(e) => deleteRow(id, e)}>Deletar linha</button>
+
+O id pode ser um valor passado na hora de renderizar os elementos. A função deleteRow seria:
+
+function deleteRow(id, e) {
+  // lógica aqui
+}

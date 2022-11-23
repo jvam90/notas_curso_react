@@ -1,0 +1,87 @@
+Em JavaScript, existe a função map(), que recebe uma função de callback, que é chamada 
+em cada elemento do array, executando algo, e por fim, retorna um novo array com os novos
+elementos.
+
+let array = [1,2,3];
+let double = array.map(e => e * 2);
+
+Basicamente, a função de callback é chamada pra cada elemento, dobrando o seu valor. O resultado
+final vai para a variável double.
+
+Em React, o map() é usado muito para renderizar componentes:
+
+function App() {
+  const elementos = [1, 2, 3, 4, 5];
+  const itens = elementos.map((e) => <li>{e}</li>);
+  return (
+    <>
+      <ul>{itens}</ul>
+    </>
+  );
+}
+
+O map vai retornar um array de elementos/objetos react. Ao mostrar na tela, se ver o console,
+é possível ver uma mensagem dizendo que cada filho em uma lista deve ter uma propriedade
+'key' única, pois evita problemas na renderização:
+
+Warning: Each child in a list should have a unique "key" prop.
+
+Para corrigir:
+
+const itens = elementos.map((e, index) => <li key={index}>{e}</li>);
+
+O map() pode receber como parâmetro o índice atual que está sendo iterado.
+
+As chaves ajudam o React a identificar quais itens sofreram alterações, 
+foram adicionados ou removidos. As chaves devem ser atribuídas aos elementos dentro 
+do array para dar uma identidade estável aos elementos.
+
+Um ponto importante a ser observado, é que as chaves só fazem sentido dentro do contexo 
+da criação do array:
+
+function ListItem(props) {
+  const value = props.value;
+  return (
+    // Errado! Não há necessidade de definir a chave aqui:
+    <li key={value.toString()}>
+      {value}
+    </li>
+  );
+}
+
+const listItems = numbers.map((number) =>
+    // Errado! A chave deveria ser definida aqui:
+    <ListItem value={number} />
+  );
+
+Basicamente, a chave do filho está sendo criada junto com a criação dele, e não sendo
+passada como parâmetro. O correto seria:
+
+function ListItem(props) {
+  const value = props.value;
+  return (
+    <li>
+      {value}
+    </li>
+  );
+}
+
+const listItems = numbers.map((number) =>
+    <ListItem value={number} key={number.toString()} />
+  );
+
+  Outro ponto: chaves devem ser únicas entre elementos irmãos, mas não entre elementos
+  distintos. As mesmas chaves podem ser usadas para criar outro componente. É possível
+  integrar o map() no jsx também:
+
+  function NumberList(props) {
+  const numbers = props.numbers;
+  return (
+    <ul>
+      {numbers.map((number) =>
+        <ListItem key={number.toString()}
+                  value={number} />
+      )}
+    </ul>
+  );
+}

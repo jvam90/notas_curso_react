@@ -1,0 +1,35 @@
+O primeiro caso de uso de useRef seria guardar a referência de um componente. Por exemplo, guardar a referência de um componente
+para ser usado depois.
+
+Para usar:
+
+1 - se cria uma variável que terá a referência do que se quer -> const inputRef = useRef();
+2 - especifica qual componente terá a referência -> <input ref={inputRef}></input>
+
+Quando a aplicação é carregada, o react guarda uma referência do componente em questão. Assim, é possível usá-lo depois em outros
+métodos:
+
+<button
+        onClick={() => {
+          inputRef.current.focus();
+        }}
+      >
+        Clica
+      </button>
+
+Aqui, se diz que o componente referenciado (inputRef.current) -> vai ser focado. No entanto, embora se possa fazer isso com estado,
+o que pode causar uma nova renderização, com useRef isso é feito sem causar.
+
+Um outro uso poderia ser ver quantas vezes um componente foi renderizado:
+
+import { useRef } from "react";
+
+function Hello() {
+  const renders = useRef(0);
+  console.log("renders: ", renders.current++);
+  return <h1>Hello!</h1>;
+}
+
+export default Hello;
+
+Note que useRef guarda referência de qualquer coisa, não necessariamente um componente, podendo ser valores também e até funções.

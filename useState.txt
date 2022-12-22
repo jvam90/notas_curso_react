@@ -1,0 +1,154 @@
+Hooks são funções do react que permitem entrar no ciclo de vida de componentes, em componentes funcionais, o que antes só
+era possível em componentes de classe.
+
+Existem algumas regras:
+
+1 - Use Hooks Apenas no Nível Superior -> não se pode usar hooks dentro de laços, condicionais ou funções aninhadas. Eles devem
+ser chamados sempre na mesma ordem pelo ciclo de vida, ou seja, devem ser de nível superior apenas.
+
+2 - Só usar dentro de funções react -> não usar dentro de funções javascript normais, mas apenas dentro de componentes ou dentro
+de hooks customizados.
+
+useState
+
+É o primeiro hook. Pode ser importado do próprio react:
+
+import React, { useState } from "react";
+
+Tem algumas formas:
+
+1 - pode receber um valor inicial, que será usado:
+
+useState(10) -> indica que qualquer coisa que guardar esse estado, terá o valor inicial de 10.
+
+2 - pode receber uma função:
+
+useState(() => inicializacao());
+
+É útil quando se tem uma inicialização grande / pesada, e só vai executar no estado inicial (na primeira vez).
+
+useState retorna um array:
+
+const [cont, setCont] = useState(10);
+
+Basicamente, ele retorna uma variável onde se guarda o estado, e uma função que atualiza esse estado. Uma outra forma de usar é semelhante 
+ao useState com uma função:
+
+      <button onClick={() => setCont((cont) => cont + 1)}>atualizado</button>
+
+Se passa uma função atualizadora que retorna um valor. Ela recebe como parâmetro o estado atual. É interessante usar dessa forma
+pois a atualização de estados no react pode não acontecer na mesma hora por sua natureza assíncrona. Assim, se evita condições de corrida
+ou updates de forma errada.
+
+Se pode guardar qualquer coisa no estado, como por exemplo, um objeto.
+
+const[{cont1,cont2},setCont] = useState({cont1: 10, cont2:20}).
+
+No entanto, ao atualizar um objeto, precisa-se notar que o react, em componentes funcionais, não mescla os objetos. Ele simplesmente
+pega o que aparecer, e assume que aquilo será o novo objeto:
+
+import React, { useState } from "react";
+
+function App() {
+  const [{ cont1, cont2 }, setCont] = useState({ cont1: 10, cont2: 20 });
+  return (
+    <div>
+      <button
+        onClick={() =>
+          setCont((currentState) => ({
+            cont1: currentState.cont1 + 1,
+          }))
+        }
+      >
+        atualizado
+      </button>
+
+      <p>{cont1}</p>
+      <p>{cont2}</p>
+    </div>
+  );
+}
+
+export default App;
+
+No exemplo acima, se recebe o estado atual para a função atualizadora e se retorna um objeto. No entanto, ele não vai ser mesclado.
+Para mesclar, ou se atribui todas as chaves, ou se usa o spread.
+
+import React, { useState } from "react";
+
+function App() {
+  const [{ cont1, cont2 }, setCont] = useState({ cont1: 10, cont2: 20 });
+  return (
+    <div>
+      <button
+        onClick={() =>
+          setCont((currentState) => ({
+            ...currentState,
+            cont1: currentState.cont1 + 1,
+          }))
+        }
+      >
+        atualizado
+      </button>
+
+      <p>{cont1}</p>
+      <p>{cont2}</p>
+    </div>
+  );
+}
+
+export default App;
+
+Nada impede de se ter mais de um useState ao invés de um objeto, inclusive, facilita as coisas. Se o usuário quer atualizar mais
+de uma coisa ao mesmo tempo, pode-se usar objetos. Se não, separa para facilitar o entendimento do código.
+
+Uma coisa legal de se fazer é abstrair a lógica do useState em formulários, por exemplo. Podemos definir um hook customizado: useForm:
+
+import { useState } from "react";
+
+export const useForm = (initialValues) => {
+  const [values, setValues] = useState(initialValues);
+
+  return [
+    values,
+    (e) => {
+      setValues({
+        ...values,
+        [e.target.name]: e.target.value,
+      });
+    },
+  ];
+};
+
+Basicamente, se exporta uma função que vai retornar um array, contendo valor e uma função de atualização. Ela recebe como parâmetro
+os valores iniciais e retorna o array baseado no evento passado (onchange, onclick, etc).
+
+No código:
+
+import { useForm } from "./useForm";
+function App() {
+  const [values, handleChange] = useForm({ email: "", senha: "" });
+  return (
+    <div>
+      <input
+        name="email"
+        type="email"
+        value={values.email}
+        onChange={handleChange}
+      ></input>
+      <br></br>
+      <input
+        name="senha"
+        type="password"
+        value={values.senha}
+        onChange={handleChange}
+      ></input>
+      <br></br>
+      <p>Usuário: {values.email}</p>
+      <p>Senha: {values.senha}</p>
+    </div>
+  );
+}
+
+export default App;
+

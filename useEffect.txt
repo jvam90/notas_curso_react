@@ -1,0 +1,114 @@
+Basicamente, o useEffect é uma função que vai ser chamada toda vez que o componente for renderizado. Sabemos que o react renderiza
+novamente após cada mudança de estado. Então, se eu mudo o estado em um onchange, por exemplo, useEffect vai ser chamado toda vez.
+
+useEffect(() => {
+    //qualquer coisa que queira ser executada vai aqui
+})
+
+Outro uso seria para limpeza após renderizar. É possível também fazer com que a função seja chamada de forma que ela dependa de variáveis.
+Por exemplo:
+
+ const [values, handleChange] = useForm({ email: "", senha: "" });
+
+  useEffect(() => {
+    console.log("rendered");
+  }, [values.email]);
+
+Basicamente, é dizer que toda vez que values.email mudar, dispare a função dentro do useEffect. Na primeira vez, sempre vai ser disparado.
+É padrão do react. É possível passar mais de um valor:
+
+const [values, handleChange] = useForm({ email: "", senha: "", nome: "" });
+
+useEffect(() => {
+    console.log("rendered");
+}, [values.email, values.nome]);
+
+Ou seja, quando mudar email e ou nome, vai disparar. O react faz uma comparação 'rasa' dos valores. Se eles mudarem, o useEffect vai
+ser disparado. Não é muito bom usar com objetos, pois como se trabalha com referências, sempre a referência do objeto vai mudar:
+
+const [values, handleChange] = useForm({ email: "", senha: "", nome: "" });
+
+useEffect(() => {
+    console.log("rendered");
+}, [values]);
+
+No caso, se passou que, toda vez que o objeto mudar, vai disparar. Se passar o array de dependências vazio, o useEffect vai ser disparado
+apenas uma vez, quando monta o componente.
+
+useEffect pode retornar uma função de dentro da função anônima:
+
+useEffect(() => {
+    console.log("rendered");
+    return () => {
+        console.log("unmount");
+    }
+}, [values.email]);
+
+O que isso faz? Basicamente, tem duas funções: uma quando o componente acaba de ser renderizado/montado, e outra que vai ser chamada
+quando o componente não for mais exibido/desmontado. Seria o mesmo que, passando values.email, quando ele mudar, vai disparar o unmount
+e depois o rendered. Ou seja, desmontado e depois montado.
+
+Um dos usos do useEffect também, é de adicionar event listeners:
+
+  useEffect(() => {
+    const mouseList = (e) => {
+      console.log(e);
+    };
+    window.addEventListener("mousemove", mouseList);
+  });
+
+Após renderizar o componente, se adiciona um evento. Eu também posso ter mais de um useEffect. Eles vão ser disparados em ordem.
+
+  useEffect(() => {
+    console.log(1);
+  }, []);
+
+  useEffect(() => {
+    console.log(2);
+  }, []);
+
+
+Outro uso é chamar APIs.
+
+Podemos criar um hook customizado para isso:
+
+import { useEffect, useState } from "react";
+
+export const useFetch = (url) => {
+  const [state, setState] = useState({ data: null, loading: true });
+  useEffect(() => {
+    setState({ data: null, loading: true });
+    fetch(url)
+      .then((x) => x.text())
+      .then((y) => {
+        setState({ data: y, loading: false });
+      });
+  }, [url]);
+  return state;
+};
+
+E para usar:
+
+import { useFetch } from "./useFetch";
+import { useState } from "react";
+function App() {
+  const [count, setCount] = useState(1);
+  const { data, loading } = useFetch(`http://numbersapi.com/${count}/trivia`);
+
+  return (
+    <div>
+      <>{loading ? "carregando" : data}</>
+      <button onClick={() => setCount((previousState) => previousState + 1)}>
+        +
+      </button>
+      <button onClick={() => setCount((previousState) => previousState - 1)}>
+        -
+      </button>
+    </div>
+  );
+}
+
+export default App;
+
+
+Assim é possível combinar hooks dentro de outros, para poder ter funções mais robustas.
